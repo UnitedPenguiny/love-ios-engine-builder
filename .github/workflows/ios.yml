@@ -1,0 +1,25 @@
+name: Build unsigned iOS engine
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ios-engine
+  cancel-in-progress: false
+jobs:
+  engine:
+    # Standard macOS runners are free in PUBLIC repositories. Never dispatch
+    # this workflow in a private repository without checking billing first.
+    if: github.event.repository.private == false
+    runs-on: macos-15
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Compile official LÖVE without signing or game data
+        run: python3 build_engine.py --output "$RUNNER_TEMP/engine-output"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: unsigned-ios-engine
+          path: ${{ runner.temp }}/engine-output/*
+          retention-days: 1
+          if-no-files-found: error
