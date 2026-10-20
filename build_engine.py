@@ -70,7 +70,7 @@ def main():
         subprocess.run(command, check=True)
         app = work / "Build/love.app"
         assert (app / "love").is_file(), "Expected iOS executable was not produced"
-        subprocess.run(["xcrun", "lipo", "-verify_arch", "arm64", str(app / "love")], check=True)
+        subprocess.run(["xcrun", "lipo", str(app / "love"), "-verify_arch", "arm64"], check=True)
         with (app / "Info.plist").open("rb") as stream:
             assert plistlib.load(stream)["CFBundleSupportedPlatforms"] == ["iPhoneOS"]
         destination = output / "love-ios-engine.ipa"
