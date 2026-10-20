@@ -40,7 +40,8 @@ def main():
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="love-ios-") as temporary:
-        work = Path(temporary)
+        # macOS /var is a symlink to /private/var: compare canonical paths.
+        work = Path(temporary).resolve()
         if args.source:
             source = args.source.resolve()
         else:
